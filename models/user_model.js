@@ -1,25 +1,33 @@
 const db = require("./conn");
-const bcryptjs = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 class User{
-   
     constructor(firstname, lastname, email, password){
-
-      this.firstname = firstname;
-      this.lastname = lastname;
-      this.email = email;
-      this.password = password;
-      
-
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
+    }
+    checkPassword(hashedPassword){
+        console.log("the unhased is being run")
+        return bcrypt.compareSync(this.password, hashedPassword);
     }
 
     async login(){
 
         try{
-            const response = await db.on(
-                `select id firstname, lastname, password from users where = $1;`,[this.email]
+            const response = await db.one(
+                `select personid, firstname, lastname, password from users where  email = $1;`,[this.email]
             )
             console.log(response);
+            const isValid = this.checkPassword(response.password);
+
+            if(!!isValid){
+                const { personid , firstname, lastname} = response;
+                return { isValid, personid, firstname, lastname};
+            } else{
+                return { isValid}; 
+            }
         }
         catch(err){
             return err.message; 
@@ -38,7 +46,8 @@ class User{
                     this.password
                 ]
             )
-            console.log(response);
+            return response;
+            
         }
         catch(err){
             return err.message

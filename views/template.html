@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="./stylesheets/style.css">
     </head>
     <body>
+        ${!! isLoggedIn ? `<p>YOU ARE LOGGED IN </p> `:`<p>YOU are not logged</p>`}
         <h1 class="container">${title}</h1>
         <main class="container">${partial}</main>
     </body>
