@@ -7,6 +7,8 @@ router.get("/signup", async (req, res, next) => {
   res.render("template", {
       locals: {
           title: "Sign Up",
+          isLoggedIn : req.session.is_logged_in,
+          UserName: req.session.firstname
           
       },
       partials: {
@@ -14,20 +16,25 @@ router.get("/signup", async (req, res, next) => {
       }
   });
 });
-/* GET users listing. */
-
-
 
 router.get("/login", async (req, res, next) => {
   res.render("template", {
       locals: {
           title: "Login",
+          isLoggedIn : req.session.is_logged_in,
+          UserName: req.session.firstname
           
       },
       partials: {
           partial: "partial-login"
       }
   });
+});
+
+
+router.get("/logout", (req, res, next) => {
+  req.session.destroy();
+  res.status(200).redirect("/");
 });
 
 router.post('/signup', async (req, res, next) => {
@@ -65,14 +72,10 @@ router.post('/login', async (req, res, next) => {
     req.session.firstname = firstname;
     req.session.lastname = lastname; 
     req.session.user_id = personid;
-    
-
-
     res.status(200).redirect("/")
   }else{
     res.sendStatus(401);
   }
-
 
 });
 

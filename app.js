@@ -4,7 +4,12 @@ const express = require("express"),
     logger = require("morgan"),
     es6Renderer = require("express-es6-template-engine"),
     session = require("express-session"),
-    FileStore = require("session-file-store")(session);
+    MemoryStore = require('memorystore')(session);
+    // FileStore = require("session-file-store")(session);
+
+require("dotenv").config();
+
+console.log(process.env.SESSION_SECRET);
 
 
 const indexRouter = require("./routes/index"),
@@ -22,17 +27,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
-
     session({
-            store: new FileStore(),
-            secret: 'get rad',
-            resave: false,
-            saveUninitialized: true,
-            is_logged_in: false
-
+        cookie: { maxAge: 86400000 },
+        store: new MemoryStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
+        }),        
+        secret: "get rad",
+        resave: false,
+        saveUninitialized: true,
+        is_logged_in: false
     })
-
-)
+);
 
 
 app.use("/", indexRouter);

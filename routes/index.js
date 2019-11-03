@@ -7,7 +7,8 @@ router.get('/', function(req, res, next) {
   res.render('template',{
        locals :{
          title: '',
-         isLoggedIn: req.session.is_logged_in
+         isLoggedIn : req.session.is_logged_in,
+         UserName: req.session.firstname
        },
        partials : {
         partial:"partial-index"
